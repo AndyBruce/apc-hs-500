@@ -37,10 +37,12 @@ function outputvalue {
 # this function will help us get to know current configuration
 # use it this way: outputvalue $1 $2 
 # where  $1 is filename, $2 is output var (for ex, q is var for output3)
+# Note: Curl output file ($CFG) is regarded as a binary file so some
+#       versions of grep need the '-a' option to treat the file as text.
 
-	if [ $(grep -c "Checked..name=$2 value=0" $1) = 1 ]; then echo 0; fi
-	if [ $(grep -c "Checked..name=$2 value=1" $1) = 1 ]; then echo 1; fi
-	if [ $(grep -c "Checked..name=$2 value=2" $1) = 1 ]; then echo 2; fi
+	if [ $(grep -ac "Checked..name=$2 value=0" $1) = 1 ]; then echo 0; fi
+	if [ $(grep -ac "Checked..name=$2 value=1" $1) = 1 ]; then echo 1; fi
+	if [ $(grep -ac "Checked..name=$2 value=2" $1) = 1 ]; then echo 2; fi
 }
 
 function toggle {
@@ -66,9 +68,9 @@ fi
 # parse query
 for arg in "$@"; do
   case "$arg" in
-	$OUTPUT1=*)		o1=$(onoffreboot `echo $arg | cut -d'=' -f2`);;
-	$OUTPUT2=*)		o2=$(onoffreboot `echo $arg | cut -d'=' -f2`);;
-	$OUTPUT3=*)		o3=$(onoffreboot `echo $arg | cut -d'=' -f2`);;
+	$OUTPUT1=*)		o1=$(onoffreboot $(echo $arg | cut -d'=' -f2));;
+	$OUTPUT2=*)		o2=$(onoffreboot $(echo $arg | cut -d'=' -f2));;
+	$OUTPUT3=*)		o3=$(onoffreboot $(echo $arg | cut -d'=' -f2));;
 
 	status)			status=TRUE;;
 
